@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 2</title>
+</head>
+<body>
+    <script>
+        class Usuario{
+    constructor(nombre, apellido){
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.libros = new Array();
+        this.mascotas = new Array();
+    }
+
+    getFullName(){
+        return `Nombre y apellido: ${this.nombre} ${this.apellido}`;
+    }
+
+    addMascota(masc){
+        this.mascotas.push(masc);
+    }
+
+    getMascotas(){
+
+
+        return this.mascotas.length;
+    }
+
+    addBook(book, autor){
+
+        let obj = {nombre: book, autor: autor}
+
+        this.libros.push(obj);
+    }
+
+    getBooks(){
+        return this.libros.map(libro => libro.nombre);
+    }
+}
+
+let Carlos = new Usuario("Carlos", "Godoy");
+
+Carlos.addBook('El Señor de los anillos', "Tolkien");
+Carlos.addBook('Why we Sleep?', "Matthew Walker");
+ console.log(Carlos.getBooks());
+
+console.log(Carlos.getFullName());
+Carlos.addMascota('Perro');
+Carlos.addMascota('Gato');
+console.log(`${Carlos.getFullName()} mascotas: ${Carlos.getMascotas()} libros: ${Carlos.getBooks()}`);
+    </script>
+</body>
+</html>

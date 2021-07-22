@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O1HavelkaIgnacio</title>
+</head>
+
+<body>
+
+    <input type="text" id="input">
+    <h4 id="Espejo">Espejo</h4>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.2.0/rxjs.umd.min.js"></script>
+    <script>
+        const { Observable } = rxjs;
+        const { map, filter, pipe } = rxjs.operators;
+
+        function invertir(cadena) {
+            var x = cadena.length;
+            var cadenaInvertida = "";
+
+            while (x >= 0) {
+                cadenaInvertida = cadenaInvertida + cadena.charAt(x);
+                x--;
+            }
+            return cadenaInvertida;
+        }
+
+
+
+        const miObservable = new Observable((observer) => {
+
+            input.onkeyup = () => {
+                const mirror = document.getElementById("Espejo");
+                const input = document.getElementById("input");
+                mirror.innerHTML = invertir(input.value)
+
+                if (input.value === "error") {
+                    observer.error(console.log("Cerrado por error")),
+                        obser.unsubscribe()
+                } else if (input.value === "complete"){
+                    observer.complete(console.log("Cerrado por complete")),
+                        obser.unsubscribe()
+                }
+                else { observer.next(console.log("prueba")) }
+            }
+        });
+
+
+        const funcionNext = () => { }
+        const funcionComplete = () => { }
+        const funcionError = () => { }
+
+        const handler = {
+            next: funcionNext,
+            complete: funcionComplete,
+            error: funcionError,
+        };
+
+        const obser = miObservable.subscribe(handler);
+
+        setTimeout(() => {
+            console.log("Cierre por tiempo");
+            obser.unsubscribe();
+            const input = document.getElementById("input");
+            mirror.innerHTML = "";
+            document.querySelector("input").disabled = true;
+        }, 30000)
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 1</title>
+</head>
+<body>
+    <script>
+        function Usuario(nombre, apellido){
+    this.nombre = nombre;
+    this.apellido = apellido;
+    this.libros = new Array();
+    this.mascotas = new Array();
+}
+
+Usuario.prototype.getFullName = function(){
+    return `Nombre y apellido: ${this.nombre + " " + this.apellido}`
+}
+
+Usuario.prototype.addMascota = function(mascota){
+    this.mascotas.push(mascota);
+}
+
+Usuario.prototype.getMascotas = function(){  
+    return this.mascotas.length;
+}
+
+Usuario.prototype.addBook = function(libro, autor){
+    const obj = {nombre: libro, autor: autor}
+    this.libros.push(obj);
+}
+
+Usuario.prototype.getBooks = function(){
+    const nombres = [];
+
+    for(var libro of this.libros){
+        nombres.push(libro.nombre);
+    }
+
+    return nombres;
+}
+
+
+ let Carlos = new Usuario("Carlos", "Godoy");
+
+ Carlos.addBook('El Señor de los anillos', "Tolkien");
+ Carlos.addBook('Why we Sleep?', "Matthew Walker");
+
+
+Carlos.addMascota('Perro');
+Carlos.addMascota('Gato');
+
+
+console.log(`${Carlos.getFullName()} 
+mascotas: ${Carlos.getMascotas()} 
+libros: ${Carlos.getBooks()}`);
+    </script>
+</body>
+</html>
