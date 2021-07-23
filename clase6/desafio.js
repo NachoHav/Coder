@@ -6,29 +6,52 @@ class Archivo{
     }
 
     leer = async () =>{
-        const data = await fs.readFile(this.nombre, 'utf-8');
+        try{
 
-        // const obj = JSON.parse(data)
+            const data = await fs.readFile(this.nombre, 'utf-8');
 
-        console.log(data);
+            const obj = JSON.parse(data)
+    
+            console.log(obj);
+
+        }catch(err){
+            console.log(err);
+        }
+       
     }
 
-    // guardar = async (title, price, thumbnail) =>{
+    guardar = async (title, price, thumbnail) =>{
+        try{
+            const data = await fs.readFile(this.nombre);
+        
+            const dataS = JSON.parse(data);
 
-    //     const data = await fs.readFile(this.nombre);
+            let id = dataS.length + 1;
+
+            const obj = {
+                "title": title,
+                "price": price,
+                "thumbnail": thumbnail,
+                "id": id
+            }
+    
+            fs.appendFile('./productos.txt',
+            JSON.stringify(obj, null, '\t'));
+
+            // console.log(obj);
+            
+
+
+        }catch(err){
+            console.log(err);
+        }
+        
         
 
-    //     const obj = {
-    //         title: title,
-    //         price: price,
-    //         thumbnail: thumbnail,
-    //         id: id
-    //     }
 
-
-    // }
+    }
 }
 
 let arc = new Archivo('./productos.txt');
 
-arc.leer();
+arc.guardar("Borrador", "453.89", "image4");
