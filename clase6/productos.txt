@@ -1,22 +1,32 @@
 [
-    {
-        "title": "Escuadra",
-        "price": 123.45,
-        "thumbnail": "image1",
-        "id": 1
-    },
-
-    {
-        "title": "Calculadora",
-        "price": 234.56,
-        "thumnail": "image2",
-        "id": 2
-    },
-
-    {
-        "title": "Lapicera",
-        "price": 45.67,
-        "thumbnail": "image3",
-        "id": 3
-    }
+	{
+		"title": "Escuadra",
+		"price": 123.45,
+		"thumbnail": "image1",
+		"id": 1
+	},
+	{
+		"title": "Calculadora",
+		"price": 234.56,
+		"thumnail": "image2",
+		"id": 2
+	},
+	{
+		"title": "Lapicera",
+		"price": 45.67,
+		"thumbnail": "image3",
+		"id": 3
+	},
+	{
+		"title": "Borrador",
+		"price": 453.89,
+		"thumbnail": "image4",
+		"id": 4
+	},
+	{
+		"title": "Boligoma",
+		"price": 253.89,
+		"thumbnail": "image5",
+		"id": 5
+	}
 ]

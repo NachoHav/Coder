@@ -14,6 +14,8 @@ class Archivo{
     
             console.log(obj);
 
+            
+
         }catch(err){
             console.log(err);
         }
@@ -26,6 +28,15 @@ class Archivo{
         
             const dataS = JSON.parse(data);
 
+            let arr = [];
+
+          
+            var keys = Object.keys(dataS);
+
+            keys.forEach(function(key){
+                arr.push(dataS[key]);
+            });
+
             let id = dataS.length + 1;
 
             const obj = {
@@ -34,24 +45,31 @@ class Archivo{
                 "thumbnail": thumbnail,
                 "id": id
             }
-    
-            fs.appendFile('./productos.txt',
-            JSON.stringify(obj, null, '\t'));
-
-            // console.log(obj);
+            
+            arr.push(obj);
             
 
+            await fs.writeFile(this.nombre,
+            JSON.stringify(arr, null, '\t'));
+
+            // console.log(arr);            
 
         }catch(err){
             console.log(err);
         }
-        
-        
+    }
 
-
+    borrar = async () => {
+        try{
+            fs.unlink(this.nombre);
+        }catch(err){
+            console.log(err);
+        }
     }
 }
 
 let arc = new Archivo('./productos.txt');
 
-arc.guardar("Borrador", "453.89", "image4");
+arc.leer();
+// arc.borrar();
+// arc.guardar("Boligoma", 253.89, "image5");
