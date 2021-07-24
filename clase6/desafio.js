@@ -1,4 +1,6 @@
 const fs = require("fs/promises");
+const path = './productos.txt';
+
 class Archivo{
     
     constructor(nombre){
