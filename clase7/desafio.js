@@ -5,32 +5,8 @@ const path = './productos.txt';
 
 const app = express();
 
-// let visitas = 0;
-
-// app.get('/', function(req, res){
-//     console.log('request recibido');
-//     res.json("<h1>Bienvenidos al servidor express</h1>");
-// });
-
-// app.get('/visitas', (req, res) =>{    
-//     console.log('Request recibido ' + visitas);
-//     visitas++;
-//     res.json(`La cantidad de visitas es: ${visitas}`);
-// });
-
-// app.get('/fyh', (req, res) => {
-//     console.log('Request recibido');
-//     res.json(`fyh: ${moment()}`)
-// })
-
-
-
-// const server = app.listen(8080, () =>{
-//     console.log('Ejemplo en puerto 8080')
-// });
-
-// server.on("error", error => console.log(`Error en el servidor. ${error}`));
-
+let visitasItems = 0;
+let visitasItemR = 0;
 
 app.get('/items', async (req, res) =>{
     try{
@@ -39,16 +15,13 @@ app.get('/items', async (req, res) =>{
 
         const obj = JSON.parse(data);
 
-
-        // res.json(`{items: [${obj}], Cantidad: ${obj.length}}`);
         let arr = {
             items: obj,
             totalItems: obj.length
         }
+        visitasItems++;
         res.json(arr);
-
         
-
     }catch(err){
         console.log(err);
     }
@@ -59,19 +32,37 @@ app.get('/item-random', async (req, res) =>{
         const data =  await fs.readFile(path, 'utf-8');
         const obj = JSON.parse(data);
 
-        let rand = Math.floor(Math.random() * (obj.length - 1 + 1) + 1);
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min) + min);
+          }
+
+
+        let rand = getRandomInt(0, obj.length);
 
         let objRand = obj[rand];
         let arr = {
             item: objRand
         }
-        // console.log(rand);
+        visitasItemR++;
         res.json(arr);
 
     }catch(err){
         console.log(err);
     }
 
+});
+
+app.get('/visitas', (req, res) =>{
+    let resp = {
+        visitas:{
+            items: visitasItems,
+            item: visitasItemR
+        }
+    }
+
+    res.json(resp);
 });
 
 
