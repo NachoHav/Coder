@@ -1,22 +1,9 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable consistent-return */
-/* eslint-disable eqeqeq */
-/* eslint-disable prefer-destructuring */
 import express from 'express';
-import { productos, Producto } from './producto';
+import { productos, Producto } from '../src/producto.js';
 
-const app = express();
-const port = 8080;
+const router = express.Router();
 
-const server = app.listen(port, () => {
-  console.log(`Escuchando desde puerto: ${port}`);
-});
-
-server.on('error', (error) =>
-  console.log(`Error del servidor ${console.log(error)}`)
-);
-
-app.get('/api/productos/listar', (req, res) => {
+router.get('/listar', (req, res) => {
   if (productos.length == []) {
     return res.status(404).json({
       Error: 'No hay productos cargados',
@@ -25,7 +12,7 @@ app.get('/api/productos/listar', (req, res) => {
   res.json(productos);
 });
 
-app.get('/api/productos/listar/:id', (req, res) => {
+router.get('/listar/:id', (req, res) => {
   const id = req.params.id;
   if (id <= 0 || id > productos.length) {
     return res.status(404).json({
@@ -37,10 +24,7 @@ app.get('/api/productos/listar/:id', (req, res) => {
   res.json(producto);
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.post('/api/productos/guardar', (req, res) => {
+router.post('/guardar', (req, res) => {
   const body = req.body;
 
   if (body == {}) {
@@ -58,3 +42,28 @@ app.post('/api/productos/guardar', (req, res) => {
 
   res.json(productos);
 });
+
+router.put('/actualizar/:id', (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+
+  productos[id - 1] = {
+    id: id,
+    title: body.title,
+    price: body.price,
+    thumbnail: body.thumbnail,
+  };
+  const producto = productos[id - 1];
+  res.json({ producto });
+});
+
+router.delete('/eliminar/:id', (req, res) => {
+  const id = req.params.id;
+
+  const producto = productos[id - 1];
+  productos.splice(id - 1, 1);
+
+  res.json({ producto });
+});
+
+export default router;
