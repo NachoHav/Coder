@@ -1,7 +1,17 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable object-shorthand */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable eqeqeq */
+/* eslint-disable consistent-return */
 import express from 'express';
+// eslint-disable-next-line no-unused-vars
 import { productos, Producto } from '../public/producto';
 
 const router = express.Router();
+
+router.get('/', (req, res) => {
+  res.render('main');
+});
 
 router.get('/listar', (req, res) => {
   if (productos.length == []) {
@@ -10,7 +20,7 @@ router.get('/listar', (req, res) => {
     });
   }
   // res.json(productos);
-  res.render('main', { productos });
+  res.render('listaProductos', { productos });
 });
 
 router.get('/listar/:id', (req, res) => {
@@ -26,7 +36,7 @@ router.get('/listar/:id', (req, res) => {
 });
 
 router.get('/cargar', (req, res) => {
-  res.render('./partials/cargarProductos', { layout: 'index' });
+  res.render('./cargarProductos', { layout: 'index' });
 });
 
 router.post('/guardar', (req, res) => {
@@ -46,7 +56,7 @@ router.post('/guardar', (req, res) => {
   });
 
   // res.render('main', { productos });
-  res.render('./partials/cargarProductos', { layout: 'index' });
+  res.render('./cargarProductos', { layout: 'index' });
 });
 
 router.put('/actualizar/:id', (req, res) => {

@@ -10,13 +10,13 @@
     "dev": "nodemon --exec babel-node ./src/index.js",
     "lint:fail": "eslint \"{src,apps,libs,tests}/**/*.js\"",
     "lint:fix": "eslint \"{src,apps,libs,tests}/**/*.js\" --fix"
-      
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "pug": "^3.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.8",
