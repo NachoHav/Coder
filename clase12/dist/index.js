@@ -2,57 +2,82 @@
 
 var _express = _interopRequireDefault(require("express"));
 
-var _expressHandlebars = _interopRequireDefault(require("express-handlebars"));
-
 var _path = _interopRequireDefault(require("path"));
 
-var _productos = _interopRequireDefault(require("../src/routes/productos.js"));
+var _api = _interopRequireDefault(require("./routes/api.js"));
+
+var _expressHandlebars = _interopRequireDefault(require("express-handlebars"));
+
+var _data = require("./modules/data.js");
+
+var http = _interopRequireWildcard(require("http"));
+
+var _websocket = require("./services/websocket.js");
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* eslint-disable linebreak-style */
-
-/* eslint-disable import/extensions */
-
-/* eslint-disable import/no-useless-path-segments */
-
-/* eslint-disable no-path-concat */
-
-/* eslint-disable comma-dangle */
-
-/* eslint-disable prefer-template */
-
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-multiple-empty-lines */
-
-/* eslint-disable linebreak-style */
+/** Configuración para EXPRESS */
 const app = (0, _express.default)();
-const server = app.listen(8080, () => {
-  console.log('Server up, port 8080');
-});
+const puerto = 8080; //Iniciando la carpeta public
+
+const publicPath = _path.default.resolve(__dirname, './../public');
+
+app.use(_express.default.static(publicPath)); // Módulos usados para aceptar el método post con JSON o urlencoded
+
+app.use(_express.default.json());
+app.use(_express.default.urlencoded({
+  extended: true
+}));
+/** Configurando Handlebars */
+//Estableciendo los path de los views para Handlebars
 
 const layoutDirPath = _path.default.resolve(__dirname, '../views/layouts');
 
 const defaultLayerPth = _path.default.resolve(__dirname, '../views/layouts/index.hbs');
 
-const partialDirPath = _path.default.resolve(__dirname, '../views/partials');
+const partialDirPath = _path.default.resolve(__dirname, '../views/partials'); //Configurando el engine con Handlerbars y los path personalizados
 
-const publicPath = _path.default.resolve(__dirname, './public');
 
+app.set('view engine', 'hbs');
 app.engine('hbs', (0, _expressHandlebars.default)({
+  layoutsDir: layoutDirPath,
   extname: 'hbs',
   defaultLayout: defaultLayerPth,
-  layoutsDir: layoutDirPath,
   partialsDir: partialDirPath
 }));
-app.set('view engine', 'hbs');
-app.set('views', './views');
-app.use(_express.default.static(publicPath));
-app.use(_express.default.json());
-app.use(_express.default.urlencoded({
-  extended: true
-}));
-app.use('/api/productos', _productos.default); // app.get('/', (req, res) => {
-//   res.render('main', { layout: 'index' });
-// });
+/**
+ * INICIALIZACION DEL SERVER y SERVICIOS
+ */
+//Creando el objeto http ára usar websocket
+
+const myServer = http.Server(app); //Init SocketIo Server
+
+(0, _websocket.initWsServer)(myServer); //El server se inicia escuchando
+
+myServer.listen(puerto, () => console.log('Server up en puerto', puerto));
+/**
+ * DEFINICION DE LOS ROUTERS
+ */
+
+app.use('/api', _api.default); // Render de la pagina vista
+
+app.get('/', (req, res) => {
+  const data = {
+    mostrarForm: true,
+    mostrarList: true,
+    productos: _data.productos
+  };
+  res.render('main', data);
+}); // Render de la pagina vista
+
+app.get('/productos/vista', (req, res) => {
+  const data = {
+    mostrarVista: true,
+    productos: _data.productos
+  };
+  res.render('main', data);
+});

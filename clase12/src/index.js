@@ -1,57 +1,66 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable import/extensions */
-
-/* eslint-disable import/no-useless-path-segments */
-/* eslint-disable no-path-concat */
-/* eslint-disable comma-dangle */
-/* eslint-disable prefer-template */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable linebreak-style */
 import express from 'express';
-import handlebars from 'express-handlebars';
 import path from 'path';
-import productos from '../src/routes/productos.js';
+import routerApi from './routes/api.js';
+import handlebars from 'express-handlebars';
+import { productos } from './modules/data.js';
 import * as http from 'http';
-import io from 'socket.io';
+import { initWsServer } from './services/websocket.js';
 
+/** Configuración para EXPRESS */
 const app = express();
+const puerto = 8080;
 
-const myServer = http.Server(app);
+//Iniciando la carpeta public
+const publicPath = path.resolve(__dirname, './../public');
+app.use(express.static(publicPath));
 
-myServer.listen(8080, () => {
-  console.log('Server up, port 8080');
-});
+// Módulos usados para aceptar el método post con JSON o urlencoded
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+/** Configurando Handlebars */
+//Estableciendo los path de los views para Handlebars
 const layoutDirPath = path.resolve(__dirname, '../views/layouts');
 const defaultLayerPth = path.resolve(__dirname, '../views/layouts/index.hbs');
 const partialDirPath = path.resolve(__dirname, '../views/partials');
-const publicPath = path.resolve(__dirname, './public');
 
+//Configurando el engine con Handlerbars y los path personalizados
+app.set('view engine', 'hbs');
 app.engine(
   'hbs',
   handlebars({
+    layoutsDir: layoutDirPath,
     extname: 'hbs',
     defaultLayout: defaultLayerPth,
-    layoutsDir: layoutDirPath,
     partialsDir: partialDirPath,
   })
 );
 
-app.set('view engine', 'hbs');
-app.set('views', './views');
-app.use(express.static(publicPath));
+/**
+ * INICIALIZACION DEL SERVER y SERVICIOS
+ */
+//Creando el objeto http ára usar websocket
+const myServer = http.Server(app);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/api/productos', productos);
+//Init SocketIo Server
+initWsServer(myServer);
 
-const myWSServer = io(myServer);
+//El server se inicia escuchando
+myServer.listen(puerto, () => console.log('Server up en puerto', puerto));
 
-myWSServer.on('connection', (socket) => {
-  console.log('Un cliente se ha conectado');
+/**
+ * DEFINICION DE LOS ROUTERS
+ */
+app.use('/api', routerApi);
+
+// Render de la pagina vista
+app.get('/', (req, res) => {
+  const data = { mostrarForm: true, mostrarList: true, productos };
+  res.render('main', data);
 });
 
-// app.get('/', (req, res) => {
-//   res.render('main', { layout: 'index' });
-// });
+// Render de la pagina vista
+app.get('/productos/vista', (req, res) => {
+  const data = { mostrarVista: true, productos };
+  res.render('main', data);
+});
